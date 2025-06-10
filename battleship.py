@@ -1,4 +1,8 @@
 import random
+import json
+import os
+import re
+import time
 
 def render_sea(sea):
 
@@ -117,8 +121,8 @@ def place_random_ships(sea, ships):
                 break
 
 
-# SHIPS = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1] 
-SHIPS = [3] 
+SHIPS = [4, 3, 3, 2, 2, 2, 1, 1, 1, 1] 
+# SHIPS = [3] 
 total_ship_decks = 0
 ROWS = 10
 COLS = 10
@@ -204,56 +208,109 @@ def hit(sea, row, col):
         return True
     return False
 
-def user_turn(comp_sea_visible, comp_sea):
-    print("Your turn! Where would you like to shoot?")
+def sunk_check(sea, row, col):
+    pass
+
+def surround_ship(sea, row, col):
+    pass
+
+def user_turn(coordinate, comp_sea_visible, comp_sea):
     alphabet = "abcdefghij"
-    coordinate = input()
+    # coordinate = input()
     row = int(coordinate[1:]) - 1
     col = alphabet.index(coordinate[0])
+    if comp_sea[row][col] == None:
+        print("Invalid command. Try ")
     if hit(comp_sea, row, col):
-        print("You hit a ship! Your turn again.")
         comp_sea_visible[row][col] = "#"
         comp_sea[row][col] = "X"
+        if sunk_check(comp_sea, row, col):
+            surround_ship(comp_sea_visible, row, col)
+            print("You sunk the ship! Aim for another one.")
+        else: 
+            print("You hit a ship! Your turn again.")
+        
         return True
     else:
         print("Aww, you missed. Bot's turn!")
+        comp_sea_visible[row][col] = "~"
         return False
+
+def valid_coords(coordinate):
+    return bool(re.fullmatch(r'^[a-j](?:10|[1-9])$', coordinate))
 
 def comp_turn(user_sea_visible, user_sea):
     print("The bot is thinking...")
-
+    time.sleep(5)
     row = random.randint(0, ROWS)
     col = random.randint(0, COLS)
+    # row, col = get_coord_dot(user_sea_visible)
     if hit(user_sea, row, col):
-        print("Bot hit a ship! Bot's turn again...")
         user_sea_visible[row][col] = "#"
         user_sea[row][col] = "X"
+        if sunk_check(user_sea, row, col):
+            surround_ship(user_sea_visible, row, col)
+            print("Bot sunk a ship! Thinking again...")
+        else:
+            print("Bot hit a ship! Bot's turn again...")
         return True
     else:
         print("Bot missed. Your turn!")
+        user_sea_visible[row][col] = "~"
         return False
 
+def get_seas():
 
+    file_path = "seas.json"
+    try:
+        with open(file_path, 'r') as file:
+            seas = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        seas = []
+    return seas
+
+def save_seas(user_sea, comp_sea, user_sea_visible, comp_sea_visible):
+
+    with open("seas.json", "w") as f:
+        json.dump([user_sea, comp_sea, user_sea_visible, comp_sea_visible], f)
+
+def clear_seas():
+
+    os.remove("seas.json")
 
 def start():
+    old_seas = get_seas()
+    if (len(old_seas) == 0):
 
-    user_sea = create_sea(ROWS, COLS)
-    comp_sea = create_sea(ROWS, COLS)
-    user_sea_visible = create_sea(ROWS, COLS)
-    comp_sea_visible = create_sea(ROWS, COLS)
-    place_random_ships(user_sea, SHIPS)
-    place_random_ships(comp_sea, SHIPS)
-
+        user_sea = create_sea(ROWS, COLS)
+        comp_sea = create_sea(ROWS, COLS)
+        user_sea_visible = create_sea(ROWS, COLS)
+        comp_sea_visible = create_sea(ROWS, COLS)
+        place_random_ships(user_sea, SHIPS)
+        place_random_ships(comp_sea, SHIPS)
+    else:
+        [user_sea, comp_sea, user_sea_visible, comp_sea_visible] = old_seas
     render_seas(user_sea, comp_sea_visible, comp_sea, user_sea_visible) # 1
     is_it_user_turn = random.choice([True, False]) # check
     while True:
         if is_it_user_turn:
-            if user_turn(comp_sea_visible, comp_sea): # 2
-                if no_ships(comp_sea, total_ship_decks): # 3
-                    print("YOU WIN YAAAY")
-                    break
-            else:
-                is_it_user_turn = False
+            save_seas(user_sea, comp_sea, user_sea_visible, comp_sea_visible)
+            print("Your turn! Where would you like to shoot?")
+            command = input()
+            if (command == "gg"):
+                clear_seas() 
+                break   
+            if (command == "break"):
+                break
+            if valid_coords(command):
+                if user_turn(command, comp_sea_visible, comp_sea): # 2
+                    if no_ships(comp_sea, total_ship_decks): # 3
+                        print("YOU WIN YAAAY")
+                        break
+                else:
+                    is_it_user_turn = False
+            else: 
+                print("The command is invalid. Please try something like a4, gg or break")
         else:
             if comp_turn(user_sea_visible, user_sea): # 4
                 if no_ships(user_sea, total_ship_decks):

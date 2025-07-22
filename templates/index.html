@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Battleship</title>
+  <style>
+    body {
+      font-family: monospace;
+    }
+    .board-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .board {
+      background: #eee;
+      padding: 10px;
+      border: 1px solid #ccc;
+    }
+    pre {
+      margin: 0;
+    }
+    h2 {
+      margin-bottom: 0.4em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Battleship</h1>
+
+  <div class="board-wrapper">
+    <div class="board">
+      <h2>user_sea</h2>
+      <pre id="userSea">Loading...</pre>
+    </div>
+
+    <!-- тут -->
+
+    <div class="board">
+      <h2>user_visible</h2>
+      <pre id="userVisible">Loading...</pre>
+    </div>
+
+    <div class="board">
+      <h2>bot_sea</h2>
+      <pre id="botSea">Loading...</pre>
+    </div>
+
+    <div class="board">
+      <h2>bot_visible</h2>
+      <pre id="botVisible">Loading...</pre>
+    </div>
+  </div>
+
+  <hr>
+
+  <form id="moveForm">
+    <label for="coord">Enter coordinate (e.g. b5): </label>
+    <input id="coord" name="coord" type="text" required>
+    <button type="submit">Fire!</button>
+  </form>
+
+  <p id="status">Waiting for your move...</p>
+
+  <script>
+    async function fetchState() {
+      const res = await fetch("/state");
+      const data = await res.json();
+
+      const format = (sea) => sea.map(row => row.join(" ")).join("\n");
+
+      document.getElementById("userSea").textContent = format(data.user_sea);
+      document.getElementById("userVisible").textContent = format(data.user_visible);
+      document.getElementById("botSea").textContent = format(data.bot_sea);
+      document.getElementById("botVisible").textContent = format(data.bot_visible);
+
+      const status = document.getElementById("status");
+      if (data.game_over) {
+        status.textContent = "Game Over! Winner: " + data.winner.toUpperCase();
+        document.getElementById("coord").disabled = true;
+      } else if (data.is_user_turn) {
+        status.textContent = "Your turn";
+        document.getElementById("coord").disabled = false;
+      } else {
+        status.textContent = "Bot's turn...";
+        document.getElementById("coord").disabled = true;
+      }
+    }
+
+    document.getElementById("moveForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const coord = document.getElementById("coord").value.trim();
+      if (!coord) return;
+
+      const res = await fetch("/move", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coordinate: coord })
+      });
+
+      document.getElementById("coord").value = "";
+      await fetchState();
+    });
+
+    fetchState();
+  </script>
+</body>
+</html>

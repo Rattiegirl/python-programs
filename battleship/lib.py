@@ -203,11 +203,124 @@ def hit(sea, row, col):
         return True
     return False
 
-def sunk_check(sea, row, col):
-    pass
+def sunk_check_old(sea, row, col):
 
-def surround_ship(sea, row, col):
-    pass
+    if (sea[row + 1][col] == "#"):
+        return False
+    elif (sea[row - 1][col] == "#"):
+        return False
+    elif (sea[row][col + 1] == "#"):
+        return False
+    elif (sea[row][col - 1] == "#"):
+        return False
+    
+    return True
+
+def sunk_check(sea, row, col):
+    # проверка на однопалубный корабль
+    if (
+        (row == 0 or sea[row-1][col] == "-") 
+        and (col == 0 or sea[row][col-1] == "-") 
+        and (row == ROWS-1 or sea[row+1][col] == "-") 
+        and (col == COLS-1 or sea[row][col+1] == "-")
+    ):
+        return True, row, col, 1, True
+    
+    direction = False
+
+    if (
+        (col != 0 and sea[row][col-1] in ("#", "X")) 
+        or (col != COLS-1 and sea[row][col+1] in ("#", "X")) 
+    ):
+        direction = True
+    
+    if direction:
+        start_col = col
+        while start_col > 0:
+            if sea[row][start_col-1] == "#":
+                return False, None, None, None, None
+            if sea[row][start_col-1] == "X":
+                start_col -= 1
+            else: 
+                break
+            
+        end_col = col
+        while end_col < COLS-1:
+            if sea[row][end_col+1] == "#":
+                return False, None, None, None, None
+            if sea[row][end_col+1] == "X":
+                end_col += 1
+            else: 
+                break
+        return True, row, start_col, end_col - start_col + 1, True
+    
+    else:
+        start_row = row
+        while start_row > 0:
+            if sea[start_row-1][col] == "#":
+                return False, None, None, None, None
+            if sea[start_row-1][col] == "X":
+                start_row -= 1
+            else:
+                break
+        
+        end_row = row
+        while end_row < ROWS-1:
+            if sea[end_row+1][col] == "#":
+                return False, None, None, None, None
+            if sea[end_row+1][col] == "X":
+                end_row += 1
+            else:
+                break
+        return True, start_row, col, end_row - start_row + 1, False
+
+        
+         
+    
+def surround_ship(sea, start_row, start_col, direction, length):
+    if direction:
+        min_col = 0
+        max_col = COLS - 1
+        # если слева нет стены
+        if start_col > 0:
+            sea[start_row][start_col-1] = "-"
+            min_col = start_col - 1
+         # если справо нет стены
+        if start_col + length < COLS:
+            sea[start_row][start_col + length] = "-"
+            max_col = start_col + length
+         # если сверху нет стены
+        if start_row > 0:
+
+            for i in range (min_col, max_col + 1):
+                sea[start_row - 1][i] = "-"
+        
+         # если снизу нет стены
+        if start_row < ROWS - 1:
+
+            for i in range (min_col, max_col + 1):
+                sea[start_row + 1][i] = "-"
+   
+    else:
+        min_row = 0
+        max_row = ROWS - 1
+        if start_row > 0:
+            sea[start_row - 1][start_col] = "-"
+            min_row = start_row - 1
+        if start_row + length < ROWS:
+            sea[start_row + length][start_col] = "-"
+            max_row = start_row + length
+        if start_col > 0:
+            for i in range(min_row, max_row + 1):
+                sea[i][start_col - 1] = "-"
+        if start_col < COLS - 1:
+            for i in range(min_row, max_row + 1):
+                sea[i][start_col + 1] = "-"
+
+
+
+
+
 
 def user_turn(coordinate, comp_sea_visible, comp_sea):
     alphabet = "abcdefghij"
@@ -235,7 +348,23 @@ def valid_coords(coordinate):
     return bool(re.fullmatch(r'^[a-j](?:10|[1-9])$', coordinate))
 
 def get_coord_dot(sea):
-    pass
+    for row in range(ROWS):
+        for col in range(COLS):
+            if (sea[row][col] == "X"):
+                if (sea[row+1][col] == "."):
+                    dot_row = row + 1
+                    dot_col = col
+                elif (sea[row][col+1] == "."):
+                    dot_row = row
+                    dot_col = col + 1
+                elif (sea[row-1][col] == "."):
+                    dot_row = row - 1
+                    dot_col = col
+                elif (sea[row][col-1] == "."):
+                    dot_row = row
+                    dot_col = col - 1
+    return dot_row, dot_col
+
 
 def comp_turn(user_sea_visible, user_sea):
     row, col = get_recursive_random_point(user_sea_visible)
@@ -245,8 +374,9 @@ def comp_turn(user_sea_visible, user_sea):
     if hit(user_sea, row, col):
         user_sea_visible[row][col] = "#"
         user_sea[row][col] = "X"
-        if sunk_check(user_sea, row, col):
-            surround_ship(user_sea_visible, row, col)
+        sunk, s_row, s_col, s_length, s_direction = sunk_check(user_sea, row, col)
+        if sunk:
+            surround_ship(user_sea_visible, s_row, s_col, s_direction, s_length)
             print("Bot sunk a ship! Thinking again...")
         else:
             print("Bot hit a ship! Bot's turn again...")

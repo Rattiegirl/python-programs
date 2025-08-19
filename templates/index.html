@@ -1,41 +1,111 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Battleship</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: monospace;
     }
+
     .board-wrapper {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
+
     .board {
       background: #eee;
       padding: 10px;
       border: 1px solid #ccc;
     }
+
     pre {
       margin: 0;
     }
+
     h2 {
       margin-bottom: 0.4em;
     }
+
+    .sea {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: space-between;
+      width: 250px;
+      height: 250px;
+      gap: 0;
+    }
+
+    .spot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 25px;
+      height: 25px;
+      border: 3px solid rgb(59, 24, 255);
+      background-color: rgb(42, 163, 244);
+      border-radius: 5px;
+    }
+
+    .deck {
+      width: 20px;
+      height: 20px;
+      border: 3px solid grey;
+      background-color: rgb(181, 181, 181);
+      border-radius: 50%;
+    }
+
+    .bubble {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      background-color: transparent;
+    }
+
+    .sinking_ship {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 20px;
+      height: 20px;
+      background-color: transparent;
+    }
   </style>
 </head>
+
 <body>
   <h1>Battleship</h1>
 
   <div class="board-wrapper">
-    <div class="board">
+    <div class="board" id="board-1">
       <h2>user_sea</h2>
       <pre id="userSea">Loading...</pre>
     </div>
 
     <!-- тут -->
+    <div class="sea">
+      <div class="spot"></div>
+      <div class="spot"></div>
+      <div class="spot"><img src="/pictures/bubbles.png" class="bubble" alt="" /></div>
+      <div class="spot"></div>
+      <div class="spot"><img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" /></div>
+      <div class="spot">
+        <div class="deck"></div>
+      </div>
+      <div class="spot"></div>
+      <div class="spot"></div>
+      <div class="spot"></div>
+    </div>
 
-    <div class="board">
+    <div class="board" id="board-2">
       <h2>user_visible</h2>
       <pre id="userVisible">Loading...</pre>
     </div>
@@ -69,6 +139,9 @@
       const format = (sea) => sea.map(row => row.join(" ")).join("\n");
 
       document.getElementById("userSea").textContent = format(data.user_sea);
+      const wrapperEl1 = document.querySelector("#board-1")
+      renderSea(data.user_sea, wrapperEl1)
+      console.log(data.user_sea)
       document.getElementById("userVisible").textContent = format(data.user_visible);
       document.getElementById("botSea").textContent = format(data.bot_sea);
       document.getElementById("botVisible").textContent = format(data.bot_visible);
@@ -102,6 +175,56 @@
     });
 
     fetchState();
+
+    const renderSea = (sea, wrapperEl) => {
+      const seaEl = document.createElement("div")
+      seaEl.classList.add("sea")
+      seaEl.innerHTML = ""
+      for (const row of sea) {
+        for (const cell of row) {
+          if (cell === ".") {
+            seaEl.innerHTML += '<div class="spot"></div>'
+
+          } else if (cell === "#") {
+            seaEl.innerHTML += '<div class="spot"><div class="deck"></div></div>'
+
+          } else if (cell === "~") {
+            seaEl.innerHTML += '<div class="spot"><img src="/pictures/bubbles.png" class="bubble" alt="" /></div>'
+
+          } else if (cell === "X") {
+            seaEl.innerHTML += '<div class="spot"><img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" /></div>'
+
+          }else if (cell === "-") {
+            seaEl.innerHTML += '<div class="spot">-</div>'
+          }
+        }
+      }
+      wrapperEl.append(seaEl)
+    }
+
+
+    // const sea1 = [
+    //   ["#", ".", "."],
+    //   [".", ".", "#"],
+    //   [".", ".", "."],
+    // ]
+    // renderSea(sea1, wrapperEl1)
+
+    const wrapperEl2 = document.querySelector("#board-2")
+    const sea2 = [
+      [".", "X", "~", ".", "#", "~", ".", "#", "~", "."],
+      [".", "#", "~", ".", "#", "~", "X", "#", "~", "."],
+      [".", "#", "~", ".", "#", "~", ".", "#", "~", "X"],
+      [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+      [".", "#", "~", ".", "X", "~", ".", "#", "~", "."],
+      [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
+      [".", "X", "~", ".", "#", "~", ".", "X", "~", "."],
+      [".", "#", "~", ".", "#", "X", ".", "#", "~", "."],
+      [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
+      [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+    ]
+    renderSea(sea2, wrapperEl2)
   </script>
 </body>
+
 </html>

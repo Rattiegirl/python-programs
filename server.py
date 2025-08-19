@@ -2,6 +2,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi import FastAPI, HTTPException
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from battleship.lib import *
 import os
@@ -10,6 +11,7 @@ import random
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 app = FastAPI()
+app.mount("/pictures", StaticFiles(directory="pictures"), name="pictures")
 
 class MoveRequest(BaseModel):
     coordinate: str

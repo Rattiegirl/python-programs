@@ -76,7 +76,136 @@
       align-items: center;
       width: 20px;
       height: 20px;
-      background-color: transparent;
+    }
+
+    .controls {
+      background: #f5f5f5;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .controls form {
+      margin-bottom: 15px;
+    }
+
+    .controls label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .controls input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .controls button {
+      width: 100%;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .controls button:hover {
+      background: #0056b3;
+    }
+
+    .controls button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    #resetBtn {
+      width: 100%;
+      padding: 10px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #resetBtn:hover {
+      background: #c82333;
+    }
+
+    #toggleExtraBtn {
+      width: 100%;
+      padding: 10px;
+      background: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    #toggleExtraBtn:hover {
+      background: #5a6268;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .move-log {
+      background: #f8f9fa;
+      padding: 15px;
+      border: 1px solid #dee2e6;
+      border-radius: 5px;
+      margin-top: 15px;
+      height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .move-log h2 {
+      margin-top: 0;
+      margin-bottom: 15px;
+      color: #495057;
+      flex-shrink: 0;
+    }
+
+    #moveLog {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .move-entry {
+      padding: 8px;
+      margin-bottom: 5px;
+      border-radius: 3px;
+      font-size: 14px;
+    }
+
+    .move-entry.user {
+      background: #d4edda;
+      border-left: 4px solid #28a745;
+    }
+
+    .move-entry.bot {
+      background: #f8d7da;
+      border-left: 4px solid #dc3545;
+    }
+
+    .move-entry.hit {
+      border-left-color: #ffc107;
+    }
+
+    .move-entry.sunk {
+      border-left-color: #dc3545;
     }
   </style>
 </head>
@@ -85,51 +214,49 @@
   <h1>Battleship</h1>
 
   <div class="board-wrapper">
-    <div class="board" id="board-1">
-      <h2>user_sea</h2>
-      <pre id="userSea">Loading...</pre>
-    </div>
+         <div class="board" id="board-1">
+       <h2>user_sea</h2>
+       <pre id="userSea" class="hidden">Loading...</pre>
+     </div>
 
-    <!-- тут -->
-    <div class="sea">
-      <div class="spot"></div>
-      <div class="spot"></div>
-      <div class="spot"><img src="/pictures/bubbles.png" class="bubble" alt="" /></div>
-      <div class="spot"></div>
-      <div class="spot"><img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" /></div>
-      <div class="spot">
-        <div class="deck"></div>
+     <div class="board" id="board-4">
+       <h2>bot_visible</h2>
+       <pre id="botVisible" class="hidden">Loading...</pre>
+     </div>
+
+    <div class="controls">
+             <form id="moveForm">
+         <label for="coord">Enter coordinate (e.g. b5): </label>
+         <input id="coord" name="coord" type="text" required>
+         <button type="submit">Fire!</button>
+       </form>
+
+       <p id="status">Waiting for your move...</p>
+
+              <button id="resetBtn" type="button">Reset Game</button>
+
+       <button id="toggleExtraBtn" type="button">Show Extra Fields</button>
+
+       <div class="move-log">
+        <h2>Move Log</h2>
+        <div id="moveLog">No moves yet...</div>
       </div>
-      <div class="spot"></div>
-      <div class="spot"></div>
-      <div class="spot"></div>
     </div>
 
-    <div class="board" id="board-2">
-      <h2>user_visible</h2>
-      <pre id="userVisible">Loading...</pre>
-    </div>
-
-    <div class="board">
-      <h2>bot_sea</h2>
-      <pre id="botSea">Loading...</pre>
-    </div>
-
-    <div class="board">
-      <h2>bot_visible</h2>
-      <pre id="botVisible">Loading...</pre>
-    </div>
   </div>
+     <div class="board-wrapper hidden" id="extraBoardWrapper">
 
-  <hr>
+     <div class="board" id="board-2">
+       <h2>user_visible</h2>
+       <pre id="userVisible" class="hidden">Loading...</pre>
+     </div>
 
-  <form id="moveForm">
-    <label for="coord">Enter coordinate (e.g. b5): </label>
-    <input id="coord" name="coord" type="text" required>
-    <button type="submit">Fire!</button>
-  </form>
+     <div class="board" id="board-3">
+       <h2>bot_sea</h2>
+       <pre id="botSea" class="hidden">Loading...</pre>
+     </div>
 
-  <p id="status">Waiting for your move...</p>
+   </div>
 
   <script>
     async function fetchState() {
@@ -143,8 +270,17 @@
       renderSea(data.user_sea, wrapperEl1)
       console.log(data.user_sea)
       document.getElementById("userVisible").textContent = format(data.user_visible);
+      const wrapperEl2 = document.querySelector("#board-2")
+      renderSea(data.user_visible, wrapperEl2)
       document.getElementById("botSea").textContent = format(data.bot_sea);
+      const wrapperEl3 = document.querySelector("#board-3")
+      renderSea(data.bot_sea, wrapperEl3)
       document.getElementById("botVisible").textContent = format(data.bot_visible);
+      const wrapperEl4 = document.querySelector("#board-4")
+      renderSea(data.bot_visible, wrapperEl4)
+
+      // Обновляем лог ходов
+      updateMoveLog(data.move_log);
 
       const status = document.getElementById("status");
       if (data.game_over) {
@@ -174,9 +310,42 @@
       await fetchState();
     });
 
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      if (confirm("Are you sure you want to reset the game? This will start a new game.")) {
+        const res = await fetch("/reset", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+        
+        await fetchState();
+      }
+    });
+
+    document.getElementById("toggleExtraBtn").addEventListener("click", () => {
+      const toggleBtn = document.getElementById("toggleExtraBtn");
+      const extraBoardWrapper = document.getElementById("extraBoardWrapper");
+      const preElements = document.querySelectorAll("pre");
+      
+      if (extraBoardWrapper.classList.contains("hidden")) {
+        // Показываем дополнительные поля
+        extraBoardWrapper.classList.remove("hidden");
+        preElements.forEach(pre => pre.classList.remove("hidden"));
+        toggleBtn.textContent = "Hide Extra Fields";
+      } else {
+        // Скрываем дополнительные поля
+        extraBoardWrapper.classList.add("hidden");
+        preElements.forEach(pre => pre.classList.add("hidden"));
+        toggleBtn.textContent = "Show Extra Fields";
+      }
+    });
+
     fetchState();
 
     const renderSea = (sea, wrapperEl) => {
+      // Удаляем все существующие графические поля
+      const existingSeas = wrapperEl.querySelectorAll('.sea')
+      existingSeas.forEach(sea => sea.remove())
+      
       const seaEl = document.createElement("div")
       seaEl.classList.add("sea")
       seaEl.innerHTML = ""
@@ -194,7 +363,7 @@
           } else if (cell === "X") {
             seaEl.innerHTML += '<div class="spot"><img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" /></div>'
 
-          }else if (cell === "-") {
+          } else if (cell === "-") {
             seaEl.innerHTML += '<div class="spot">-</div>'
           }
         }
@@ -202,28 +371,47 @@
       wrapperEl.append(seaEl)
     }
 
+    function updateMoveLog(moveLog) {
+      const logContainer = document.getElementById("moveLog");
+      
+      if (!moveLog || moveLog.length === 0) {
+        logContainer.innerHTML = "No moves yet...";
+        return;
+      }
 
-    // const sea1 = [
-    //   ["#", ".", "."],
-    //   [".", ".", "#"],
-    //   [".", ".", "."],
-    // ]
-    // renderSea(sea1, wrapperEl1)
+      // Сортируем по времени по убыванию (новые сверху)
+      const sortedLog = [...moveLog].sort((a, b) => {
+        const timeA = new Date(`2000-01-01 ${a.timestamp}`);
+        const timeB = new Date(`2000-01-01 ${b.timestamp}`);
+        return timeB - timeA;
+      });
 
-    const wrapperEl2 = document.querySelector("#board-2")
-    const sea2 = [
-      [".", "X", "~", ".", "#", "~", ".", "#", "~", "."],
-      [".", "#", "~", ".", "#", "~", "X", "#", "~", "."],
-      [".", "#", "~", ".", "#", "~", ".", "#", "~", "X"],
-      [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
-      [".", "#", "~", ".", "X", "~", ".", "#", "~", "."],
-      [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
-      [".", "X", "~", ".", "#", "~", ".", "X", "~", "."],
-      [".", "#", "~", ".", "#", "X", ".", "#", "~", "."],
-      [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
-      [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
-    ]
-    renderSea(sea2, wrapperEl2)
+      let logHTML = "";
+      sortedLog.forEach(move => {
+        const playerClass = move.player === "user" ? "user" : "bot";
+        const resultClass = move.result === "hit" ? "hit" : "";
+        const sunkClass = move.sunk ? "sunk" : "";
+        
+        const classes = `move-entry ${playerClass} ${resultClass} ${sunkClass}`.trim();
+        
+        const resultText = move.result === "hit" 
+          ? (move.sunk ? "HIT & SUNK!" : "HIT!") 
+          : "MISS";
+        
+        const playerText = move.player === "user" ? "You" : "Bot";
+        
+        logHTML += `
+          <div class="${classes}">
+            <strong>${move.timestamp}</strong> - ${playerText}: ${move.coordinate.toUpperCase()} - ${resultText}
+          </div>
+        `;
+      });
+      
+      logContainer.innerHTML = logHTML;
+    }
+
+
+
   </script>
 </body>
 

@@ -1,0 +1,74 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: monospace;
+}
+
+.board-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.board {
+    background: #eee;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+pre {
+    margin: 0;
+}
+
+h2 {
+    margin-bottom: 0.4em;
+}
+
+.sea {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: space-between;
+    width: 250px;
+    height: 250px;
+    gap: 0;
+}
+
+.spot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    border: 3px solid rgb(59, 24, 255);
+    background-color: rgb(42, 163, 244);
+    border-radius: 5px;
+}
+
+.deck {
+    width: 20px;
+    height: 20px;
+    border: 3px solid grey;
+    background-color: rgb(181, 181, 181);
+    border-radius: 50%;
+}
+
+.bubble {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+}
+
+.sinking_ship {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    background-color: transparent;
+}

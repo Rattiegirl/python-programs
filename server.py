@@ -6,12 +6,14 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from battleship.lib import *
 import os
-import random
+import random 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 templates = Jinja2Templates(directory=os.path.join(BASE_DIR, "templates"))
 app = FastAPI()
 app.mount("/pictures", StaticFiles(directory="pictures"), name="pictures")
+app.mount("/css", StaticFiles(directory="css"), name="css")
+app.mount("/js", StaticFiles(directory="js"), name="js")
 
 class MoveRequest(BaseModel):
     coordinate: str

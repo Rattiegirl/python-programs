@@ -45,6 +45,25 @@ def get_state():
         "winner": game["winner"],
     }
 
+@app.post("/reset")
+def resetGame():
+    global game
+
+    game["user_sea"] = create_sea(ROWS, COLS)
+    game["bot_sea"] = create_sea(ROWS, COLS)
+    game["user_visible_sea"] = create_sea(ROWS, COLS)
+    game["bot_visible_sea"] = create_sea(ROWS, COLS)
+
+    place_random_ships(game["user_sea"], SHIPS)
+    place_random_ships(game["bot_sea"], SHIPS)
+
+    game["is_user_turn"] = True
+    game["finished"] = False
+    game["winner"] = None
+
+    return{"message": "You have reset the game", **get_state()}
+
+
 @app.post("/move")
 def make_move(move: MoveRequest):
     if game["finished"]:
@@ -94,13 +113,20 @@ def bot_move():
         game["user_visible"][row][col] = "#"
         game["user_sea"][row][col] = "X"
         sunk, s_row, s_col, s_length, s_direction = sunk_check(game["user_sea"], row, col)
+        game["is_user_turn"] = False
+        bot_move()
+
         if sunk:
             surround_ship(game["user_visible"], s_row, s_col, s_direction, s_length)
+            bot_move()
+
         if no_ships(game["user_sea"], total_ship_decks):
             game["finished"] = True
             game["winner"] = "bot"
             return {"result": "hit", "sunk": sunk, "message": "Bot wins!"}
         return {"result": "hit", "sunk": sunk}
+
+        
 
     # промах — передаём ход обратно пользователю
     game["user_visible"][row][col] = "~"

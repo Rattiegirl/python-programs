@@ -72,3 +72,19 @@ h2 {
     height: 20px;
     background-color: transparent;
 }
+
+.flex{
+    display: flex;
+}
+
+.fields {
+
+}
+
+.controls{
+
+}
+
+.gap-50{
+   gap: 50px; 
+}

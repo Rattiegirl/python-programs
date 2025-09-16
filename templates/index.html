@@ -8,16 +8,18 @@
 </head>
 
 <body>
-  <h1>Battleship</h1>
+  <div class="flex gap-50">
+    <div class="fields">
+      <h1>Battleship</h1>
 
-  <div class="board-wrapper">
-    <div class="board" id="board-1">
-      <h2>user_sea</h2>
-      <pre id="userSea">Loading...</pre>
-    </div>
+      <div class="board-wrapper">
+        <div class="board" id="board-1">
+          <h2>user_sea</h2>
+          <pre id="userSea">Loading...</pre>
+        </div>
 
-    <!-- тут -->
-    <!-- <div class="sea">
+        <!-- тут -->
+        <!-- <div class="sea">
       <div class="spot"></div>
       <div class="spot"></div>
       <div class="spot"><img src="/pictures/bubbles.png" class="bubble" alt="" /></div>
@@ -31,32 +33,40 @@
       <div class="spot"></div>
     </div> -->
 
-    <div class="board" id="board-2">
-      <h2>user_visible</h2>
-      <pre id="userVisible">Loading...</pre>
-    </div>
+        <div class="board" id="board-4">
+          <h2>bot_visible</h2>
+          <pre id="botVisible">Loading...</pre>
+        </div>
+      </div>
 
-    <div class="board" id="board-3">
-      <h2>bot_sea</h2>
-      <pre id="botSea">Loading...</pre>
-    </div>
+      <div class="board-wrapper">
+        <div class="board" id="board-2">
+          <h2>user_visible</h2>
+          <pre id="userVisible">Loading...</pre>
+        </div>
 
-    <div class="board" id="board-4">
-      <h2>bot_visible</h2>
-      <pre id="botVisible">Loading...</pre>
+        <div class="board" id="board-3">
+          <h2>bot_sea</h2>
+          <pre id="botSea">Loading...</pre>
+        </div>
+      </div>
+
+    </div>
+    <div class="controls">
+
+      <form id="moveForm">
+        <label for="coord">Enter coordinate (e.g. b5): </label>
+        <input id="coord" name="coord" type="text" required>
+        <button type="submit">Fire!</button>
+      </form>
+
+      <p id="status">Waiting for your move...</p>
+
+      <button id="resetBtn">Restart Game</button>
+      <button id="toggleBtn">Hide Cheating</button>
+
     </div>
   </div>
-
-  <hr>
-
-  <form id="moveForm">
-    <label for="coord">Enter coordinate (e.g. b5): </label>
-    <input id="coord" name="coord" type="text" required>
-    <button type="submit">Fire!</button>
-  </form>
-
-  <p id="status">Waiting for your move...</p>
-  
   <script>
     fetchState();
 
@@ -81,6 +91,42 @@
     //   [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
     // ]
     // renderSea(sea2, wrapperEl2)
+
+    document.getElementById("resetBtn").addEventListener("click", async () => {
+      if (confirm("Do you know you're resetting the game?")) {
+        const response = await fetch("/reset", {
+          method: "POST",
+          headers: { "Content-type": "application/json" }
+        });
+
+        await fetchState();
+      }
+
+    });
+
+    const toggleBtn = document.querySelector("#toggleBtn")
+    toggleBtn.addEventListener("click", () => {
+      const isHidden = toggleBtn.textContent !== "Hide Cheating"
+      if (isHidden) {
+
+        toggleBtn.textContent = "Hide Cheating"
+
+        document.querySelectorAll("pre").forEach((element) => {
+          element.style.display = "block"
+          // element.style.visibility = "visible"
+
+        })
+
+      } else {
+
+        toggleBtn.textContent = "Show Cheating"
+
+        document.querySelectorAll("pre").forEach((element) => {
+          element.style.display = "none"
+          // element.style.visibility = "hidden"
+        })
+      }
+    })
 
     document.getElementById("moveForm").addEventListener("submit", async (e) => {
       e.preventDefault();

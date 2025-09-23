@@ -62,3 +62,25 @@ const renderSea = (sea, wrapperEl) => {
     wrapperEl.append(seaEl)
 }
 
+const applyHidden = () => {
+
+    if (!isHidden) {
+
+        toggleBtn.textContent = "Hide Cheating"
+        document.querySelectorAll("pre").forEach((element) => {
+            element.style.display = "block"
+            // element.style.visibility = "visible"
+
+        })
+
+    } else {
+
+        toggleBtn.textContent = "Show Cheating"
+        document.querySelectorAll("pre").forEach((element) => {
+            element.style.display = "none"
+            // element.style.visibility = "hidden"
+        })
+    }
+
+}
+

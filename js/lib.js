@@ -72,6 +72,7 @@ const applyHidden = () => {
             // element.style.visibility = "visible"
 
         })
+        document.querySelector("#extra-board-wrapper").style.display = "block"
 
     } else {
 
@@ -80,6 +81,7 @@ const applyHidden = () => {
             element.style.display = "none"
             // element.style.visibility = "hidden"
         })
+        document.querySelector("#extra-board-wrapper").style.display = "none"
     }
 
 }

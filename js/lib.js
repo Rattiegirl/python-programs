@@ -18,6 +18,7 @@ async function fetchState() {
     document.getElementById("botVisible").textContent = format(data.bot_visible);
     const wrapperEl4 = document.querySelector('#board-4')
     renderSea(data.bot_visible, wrapperEl4)
+    handleSpots()
 
     const status = document.getElementById("status");
     if (data.game_over) {
@@ -39,26 +40,34 @@ const renderSea = (sea, wrapperEl) => {
     }
     const seaEl = document.createElement("div")
     seaEl.classList.add("sea")
-    seaEl.innerHTML = ""
+    let str = ""
+    let rowNumber = -1
     for (const row of sea) {
+        rowNumber += 1
+        let colNumber = -1
         for (const cell of row) {
+            colNumber += 1
+            str += `<div class="spot" data-row="${rowNumber}" data-col="${colNumber}">`
+
             if (cell === ".") {
-                seaEl.innerHTML += '<div class="spot"></div>'
 
             } else if (cell === "#") {
-                seaEl.innerHTML += '<div class="spot"><div class="deck"></div></div>'
+                str += '<div class="deck"></div>'
 
             } else if (cell === "~") {
-                seaEl.innerHTML += '<div class="spot"><img src="/pictures/bubbles.png" class="bubble" alt="" /></div>'
+                str += '<img src="/pictures/bubbles.png" class="bubble" alt="" />'
 
             } else if (cell === "X") {
-                seaEl.innerHTML += '<div class="spot"><img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" /></div>'
+                str += '<img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" />'
 
             } else if (cell === "-") {
-                seaEl.innerHTML += '<div class="spot">-</div>'
+                str += '-'
             }
+
+            str += "</div>"
         }
     }
+    seaEl.innerHTML = str
     wrapperEl.append(seaEl)
 }
 
@@ -86,3 +95,17 @@ const applyHidden = () => {
 
 }
 
+const handleSpots = () => {
+    document.querySelectorAll("#board-4 .spot").forEach((spot) => {
+        spot.addEventListener("click", () => {
+            const row = spot.getAttribute("data-row")
+            const col = spot.getAttribute("data-col")
+            const alphabet = "abcdefghij"
+            let letter = alphabet[col]
+            let num = +row + 1
+            // row = int(coord[1:]) - 1
+            // col = alphabet.index(coord[0])
+            alert(`Cell coordinates: (${row}, ${col}) or ${letter + num}`)
+        })
+    })
+}

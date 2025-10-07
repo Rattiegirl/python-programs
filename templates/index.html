@@ -76,14 +76,14 @@
     let isHidden = localStorage.getItem("battle_is_hidden") === "yes"
     applyHidden()
     let userName = localStorage.getItem("battle_user_name")
-    if (!userName){
+    if (!userName) {
       userName = prompt("Hello player, what is your name?")
       localStorage.setItem("battle_user_name", userName)
     }
     document.getElementById("userName").textContent = `Playing as ${userName}`
     fetchState();
 
-    document.getElementById("logout").addEventListener("click", ()=>{
+    document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem("battle_user_name")
       location.reload()
     })
@@ -121,7 +121,7 @@
 
     });
 
-    
+
     toggleBtn.addEventListener("click", () => {
       // const isHidden = toggleBtn.textContent !== "Hide Cheating"
       isHidden = !isHidden
@@ -144,6 +144,8 @@
       document.getElementById("coord").value = "";
       await fetchState();
     });
+
+
   </script>
 </body>
 

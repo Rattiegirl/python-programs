@@ -105,7 +105,24 @@ const handleSpots = () => {
             let num = +row + 1
             // row = int(coord[1:]) - 1
             // col = alphabet.index(coord[0])
-            alert(`Cell coordinates: (${row}, ${col}) or ${letter + num}`)
+            // alert(`Cell coordinates: (${row}, ${col}) or ${letter + num}`)
+            document.getElementById("coord").value = `${letter}${num}`
+            handleSubmitCoords()
+            
         })
     })
+}
+
+const handleSubmitCoords = async () => {
+      const coord = document.getElementById("coord").value.trim();
+      if (!coord) return;
+
+      const res = await fetch("/move", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ coordinate: coord })
+      });
+
+      document.getElementById("coord").value = "";
+      await fetchState();
 }

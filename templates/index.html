@@ -132,19 +132,10 @@
 
     document.getElementById("moveForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const coord = document.getElementById("coord").value.trim();
-      if (!coord) return;
-
-      const res = await fetch("/move", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ coordinate: coord })
-      });
-
-      document.getElementById("coord").value = "";
-      await fetchState();
+      handleSubmitCoords()
     });
 
+  
 
   </script>
 </body>

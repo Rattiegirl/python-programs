@@ -35,6 +35,7 @@ place_random_ships(game["bot_sea"], SHIPS)
 
 @app.get("/state")
 def get_state():
+    global game
     return {
         "user_sea": game["user_sea"],
         "user_visible": game["user_visible"],

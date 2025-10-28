@@ -15,9 +15,15 @@ def render_sea(sea):
 
 def create_sea(rows, cols):
     sea = []
+    alphabet = " abcdefghij"
+    alphabet_row = []
+    for c in range(cols+1):
+        alphabet_row.append(f"{alphabet[c]}")
+    sea.append(alphabet_row)
 
     for r in range(rows):
         row = []
+        row.append(f"{r+1}")
 
         for c in range(cols):
             row.append(".")

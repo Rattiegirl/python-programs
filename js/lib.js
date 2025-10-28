@@ -42,11 +42,43 @@ const renderSea = (sea, wrapperEl) => {
     seaEl.classList.add("sea")
     let str = ""
     let rowNumber = -1
+    // alphabet = " abcdefghij" // может быть 
+    // alphabet_row = []
+    // for (c in range(sea[1][cols] + 1)) {
+    //     alphabet_row.append(alphabet[c])
+    //     sea.append(alphabet_row)
+    // }
+    // const alphabet = "abcdefghij" нет 
+    // let colNumber = -1
+    // for (const cell of sea[1]) {
+    //     str += `<div class="num_spot" data-row="${rowNumber}" data-col="${colNumber}">${alphabet[col]}</div>`
+    //     seaEl.innerHTML = str
+    //     wrapperEl.append(seaEl)
+    //     colNumber += 1
+    // }
+    // тоже может быть
+    let colNumber = -1
+    for (const cell of sea[0]) {
+        colNumber += 1
+        str += `<div class="num_spot">${cell}</div>`
+    }
+
+    seaEl.innerHTML = str
+    wrapperEl.append(seaEl)
     for (const row of sea) {
         rowNumber += 1
+        if (rowNumber === 0){
+            continue
+        }
         let colNumber = -1
         for (const cell of row) {
             colNumber += 1
+            if (colNumber === 0){
+                str += `<div class="num_spot">${cell}</div>`
+                continue
+            }
+            // str += `<div class="num_spot">${colNumber + 1}</div>` нет
+            // let letter = alphabet[col]
             str += `<div class="spot" data-row="${rowNumber}" data-col="${colNumber}">`
 
             if (cell === ".") {
@@ -62,6 +94,7 @@ const renderSea = (sea, wrapperEl) => {
 
             } else if (cell === "-") {
                 str += '-'
+
             }
 
             str += "</div>"
@@ -101,28 +134,28 @@ const handleSpots = () => {
             const row = spot.getAttribute("data-row")
             const col = spot.getAttribute("data-col")
             const alphabet = "abcdefghij"
-            let letter = alphabet[col]
-            let num = +row + 1
+            let letter = alphabet[col-1]
+            let num = +row
             // row = int(coord[1:]) - 1
             // col = alphabet.index(coord[0])
             // alert(`Cell coordinates: (${row}, ${col}) or ${letter + num}`)
             document.getElementById("coord").value = `${letter}${num}`
             handleSubmitCoords()
-            
+
         })
     })
 }
 
 const handleSubmitCoords = async () => {
-      const coord = document.getElementById("coord").value.trim();
-      if (!coord) return;
+    const coord = document.getElementById("coord").value.trim();
+    if (!coord) return;
 
-      const res = await fetch("/move", {
+    const res = await fetch("/move", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ coordinate: coord })
-      });
+    });
 
-      document.getElementById("coord").value = "";
-      await fetchState();
+    document.getElementById("coord").value = "";
+    await fetchState();
 }

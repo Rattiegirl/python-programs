@@ -78,8 +78,8 @@ def make_move(move: MoveRequest):
         raise HTTPException(status_code=400, detail="Invalid coordinate format (use a1–j10)")
 
     alphabet = "abcdefghij"
-    row = int(coord[1:]) - 1
-    col = alphabet.index(coord[0])
+    row = int(coord[1:])
+    col = alphabet.index(coord[0]) + 1
 
     cell = game["bot_sea"][row][col]
     if cell in ("X", "~"):

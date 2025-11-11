@@ -42,9 +42,19 @@ const renderSea = (sea, wrapperEl) => {
     seaEl.classList.add("sea")
     let str = ""
     let rowNumber = -1
+    
+    for (let i = 0; i < 11; i++){
+        alphabet = " abcdefghij"
+        str += `<div class="num_spot">${alphabet[i]}</div>`
+        seaEl.innerHTML = str
+        wrapperEl.append(seaEl)
+    }
+
     for (const row of sea) {
         rowNumber += 1
         let colNumber = -1
+        str += `<div class="num_spot">${rowNumber+1}</div>`
+
         for (const cell of row) {
             colNumber += 1
             str += `<div class="spot" data-row="${rowNumber}" data-col="${colNumber}">`

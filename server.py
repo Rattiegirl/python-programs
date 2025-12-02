@@ -137,3 +137,8 @@ def bot_move():
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/storybook", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("storybook"
+    ".html", {"request": request})

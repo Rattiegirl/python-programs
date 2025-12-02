@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/css/index.css">
+    <script src="/js/lib.js"></script>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storybook</title>
+</head>
+
+<body>
+    <div class="flex gap-50">
+        <div class="st-sidebar">
+            <ul>
+                <li><a href="example.html">Sea</a></li>
+                <li><a href="example.html">Form</a></li>
+            </ul>
+        </div>
+        <div>
+            <section>
+                <h2>Sea cells for experimentation</h2>
+                <div class="cell-wrapper">
+
+                </div>
+            </section>
+            <section>
+                <h2>Seas</h2>
+                <div class="board" id="board-1">
+                    <h2>Your sea</h2>
+                    <pre id="userSea">Loading...</pre>
+                </div>
+            </section>
+            <section>
+                <h2>Forms</h2>
+            </section>
+        </div>
+    </div>
+    <script>
+        const sea = [
+            [".", "X", "~", ".", "#", "~", ".", "#", "~", "."],
+            [".", "#", "~", ".", "#", "~", "X", "#", "-", "."],
+            [".", "#", "~", ".", "#", "~", ".", "#", "~", "X"],
+            [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+            [".", "#", "~", "-", "X", "~", ".", "#", "~", "."],
+            [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
+            [".", "X", "~", ".", "#", "~", ".", "X", "~", "."],
+            [".", "#", "~", ".", "#", "X", ".", "#", "~", "."],
+            ["-", "#", "~", ".", "#", "~", ".", "#", "~", "."],
+            [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+        ]
+        // first our field's properties will be listed, and only after that what we know of the enemies
+        // . = spot of sea/spot of unknown nature
+        // # = unscathed ship/damaged ship, it also can be sunken on bot's field  that we see
+        // X = sunken ship/nonexistent
+        // ~ = nonexistent/misses
+        // - = where there cannot be a ship/where there cannot be a ship
+        
+
+        document.getElementById("userSea").textContent = format(sea);
+        const wrapperEl1 = document.querySelector("#board-1")
+        renderSea(sea, wrapperEl1)
+        console.log(sea)
+
+        const drawCell = (type, direction = "right") => {
+            const cell = document.createElement("div")
+            cell.classList.add("cell")
+            switch(type){
+                case "empty_sea": 
+                    cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
+                    break
+                case "alive_ship":
+                    cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
+                    cell.innerHTML += '<img src = "/pictures/cell/middle_deck.png"/>'
+                    break
+                default:    
+                    cell.innerHTML = "default"
+            }
+            return cell
+        }
+        const cellWrapperEl = document.querySelector(".cell-wrapper")
+        cellWrapperEl.appendChild(drawCell("empty_sea"))
+        cellWrapperEl.appendChild(drawCell("alive_ship"))
+    </script>
+</body>
+
+</html>

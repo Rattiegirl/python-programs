@@ -1,9 +1,8 @@
+const format = (sea) => sea.map(row => row.join(" ")).join("\n");
 
 async function fetchState() {
     const res = await fetch("/state");
     const data = await res.json();
-
-    const format = (sea) => sea.map(row => row.join(" ")).join("\n");
 
     document.getElementById("userSea").textContent = format(data.user_sea);
     const wrapperEl1 = document.querySelector("#board-1")

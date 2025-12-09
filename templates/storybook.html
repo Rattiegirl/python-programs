@@ -64,24 +64,75 @@
         console.log(sea)
 
         const drawCell = (type, direction = "right") => {
+            let innerType = type
+            let condition = null
+            if (type === "damaged_ship"){
+                condition = "damaged"
+                innerType = "alive_ship"
+            }else if (type === "damaged_ship_nose"){
+                condition = "damaged"
+                innerType = "alive_ship_nose"
+            }else if (type === "sunken_ship"){
+                condition = "sunken"
+                innerType = "alive_ship"
+            }else if (type === "sunken_ship_nose"){
+                condition = "sunken"
+                innerType = "alive_ship_nose"
+            }
             const cell = document.createElement("div")
             cell.classList.add("cell")
-            switch(type){
+            switch(innerType){
                 case "empty_sea": 
                     cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
                     break
                 case "alive_ship":
                     cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
-                    cell.innerHTML += '<img src = "/pictures/cell/middle_deck.png"/>'
+                    cell.innerHTML += `<img src = "/pictures/cell/middle_deck.png" class = "direction-${direction}"/>`
+                    break
+                case "alive_ship_nose":
+                    cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
+                    cell.innerHTML += `<img src = "/pictures/cell/end_deck.png" class = "direction-${direction}"/>`
+                    break
+                // case "damaged_ship":
+                //     cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
+                //     cell.innerHTML += '<img src = "/pictures/cell/middle_deck.png"/>'
+                //     cell.innerHTML += '<img src = "/pictures/cell/mark_of_defeat.png"/>'
+                //     break
+                // case "sunken_ship":
+                //     cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
+                //     cell.innerHTML += '<img src = "/pictures/cell/middle_deck.png"/>'
+                //     cell.innerHTML += '<img src = "/pictures/cell/explosion.png"/>'
+                //     break
+                case "miss":
+                case "no_ship":
+                    cell.innerHTML = '<img src = "/pictures/cell/just_sea.png"/>'
+                    cell.innerHTML += '<img src = "/pictures/cell/waves.png"/>'
                     break
                 default:    
                     cell.innerHTML = "default"
             }
+            if (condition === "damaged"){
+                cell.innerHTML += '<img src = "/pictures/cell/explosion.png"/>' 
+            }else if (condition === "sunken"){
+                cell.innerHTML += '<img src = "/pictures/cell/mark_of_defeat.png"/>'
+            }
+
             return cell
         }
         const cellWrapperEl = document.querySelector(".cell-wrapper")
         cellWrapperEl.appendChild(drawCell("empty_sea"))
         cellWrapperEl.appendChild(drawCell("alive_ship"))
+        cellWrapperEl.appendChild(drawCell("alive_ship", "up"))
+        cellWrapperEl.appendChild(drawCell("alive_ship", "left"))
+        cellWrapperEl.appendChild(drawCell("alive_ship", "down"))
+        cellWrapperEl.appendChild(drawCell("alive_ship_nose"))
+        cellWrapperEl.appendChild(drawCell("damaged_ship_nose", "up"))
+        cellWrapperEl.appendChild(drawCell("sunken_ship_nose", "left"))
+        cellWrapperEl.appendChild(drawCell("alive_ship_nose", "down"))
+        cellWrapperEl.appendChild(drawCell("damaged_ship"))
+        cellWrapperEl.appendChild(drawCell("sunken_ship"))
+        cellWrapperEl.appendChild(drawCell("miss"))
+        cellWrapperEl.appendChild(drawCell("no_ship"))
     </script>
 </body>
 

@@ -107,6 +107,8 @@ h2 {
 
 .cell-wrapper{
     display: flex;
+    max-width: 100%;
+    flex-wrap: wrap;
     gap: 20px;
 }
 
@@ -121,4 +123,14 @@ h2 {
 .cell img{
     width: 100%;
     position: absolute; 
+}
+
+.cell img.direction-up{
+    transform: rotate(-90deg);
+}
+.cell img.direction-left{
+    transform: scaleX(-1);
+}
+.cell img.direction-down{
+    transform: rotate(-90deg) scaleX(-1);
 }

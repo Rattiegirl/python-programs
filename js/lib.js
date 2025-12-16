@@ -59,7 +59,7 @@ const renderSea = (sea, wrapperEl) => {
             str += `<div class="spot" data-row="${rowNumber}" data-col="${colNumber}">`
 
             if (cell === ".") {
-
+                
             } else if (cell === "#") {
                 str += '<div class="deck"></div>'
 

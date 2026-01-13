@@ -54,7 +54,7 @@
             } else if (type === "sunken_ship_nose") {
                 condition = "sunken"
                 innerType = "alive_ship_nose"
-            }
+            } 
             let cell = '<div class="cell">'
             // const cell = document.createElement("div")
             // cell.classList.add("cell")
@@ -70,6 +70,13 @@
                     cell += '<img src = "/pictures/cell/just_sea.png"/>'
                     cell += `<img src = "/pictures/cell/end_deck.png" class = "direction-${direction}"/>`
                     break
+                case "missed":
+                    cell += '<img src = "/pictures/cell/just_sea.png"/>'
+                    cell += `<img src = "/pictures/cell/mark_of_defeat.png"/>`//todo: better picture
+                    break
+                case "unknown":
+                    cell += '<img src = "/pictures/cell/unknown.png"/>'
+                    break
                 // case "damaged_ship":
                 //     cell = '<img src = "/pictures/cell/just_sea.png"/>'
                 //     cell += '<img src = "/pictures/cell/middle_deck.png"/>'
@@ -80,10 +87,9 @@
                 //     cell += '<img src = "/pictures/cell/middle_deck.png"/>'
                 //     cell += '<img src = "/pictures/cell/explosion.png"/>'
                 //     break
-                case "miss":
-                case "no_ship":
+                case "no_ship": 
                     cell += '<img src = "/pictures/cell/just_sea.png"/>'
-                    cell += '<img src = "/pictures/cell/waves.png"/>'
+                    cell += '<img src = "/pictures/cell/waves.png"/>'  //todo: better picture
                     break
                 default:
                     cell += "default"
@@ -98,6 +104,38 @@
             return cell
         }
 
+        const transformVisibleSea = (sea) => {
+            const tSea = []
+            for (const row of sea) {
+                const tRow = []
+                for (const cell of row) {
+                    let tCell = cell
+                    if (cell === "#"){
+                        tCell = "@"
+                    }
+                    tRow.push(tCell)
+                }
+                tSea.push(tRow)
+            }
+            return tSea
+        }
+
+        const transformOppositeSea = (sea) => {
+            const tSea = []
+            for (const row of sea) {
+                const tRow = []
+                for (const cell of row) {
+                    let tCell = cell
+                    if (cell === "."){
+                        tCell = "?"
+                    }
+                    tRow.push(tCell)
+                }
+                tSea.push(tRow)
+            }
+            return tSea
+        }
+        
         const renderPrettySea = (sea, wrapperEl) => {
             const prevSea = wrapperEl.querySelector('.sea')
             if (prevSea) {
@@ -127,16 +165,23 @@
                     if (cell === ".") {
                         str += drawCell("empty_sea")
                     } else if (cell === "#") {
-                        str += '<div class="deck"></div>'
+                        str += drawCell("alive_ship")
 
                     } else if (cell === "~") {
-                        str += '<img src="/pictures/bubbles.png" class="bubble" alt="" />'
+                        str += drawCell("missed")
 
                     } else if (cell === "X") {
-                        str += '<img src="/pictures/sinking_ship.png" class="sinking_ship" alt="" />'
+                        str += drawCell("sunken_ship")
 
                     } else if (cell === "-") {
-                        str += '-'
+                        str += drawCell("no_ship")
+
+                    } else if (cell === "@") {
+                        str += drawCell("damaged_ship")
+
+                    } else if (cell === "?") {
+                        str += drawCell("unknown")
+
                     }
 
                     str += "</div>"
@@ -158,32 +203,50 @@
         cellWrapperEl.innerHTML += (drawCell("alive_ship_nose", "down"))
         cellWrapperEl.innerHTML += (drawCell("damaged_ship"))
         cellWrapperEl.innerHTML += (drawCell("sunken_ship"))
-        cellWrapperEl.innerHTML += (drawCell("miss"))
+        cellWrapperEl.innerHTML += (drawCell("missed"))
         cellWrapperEl.innerHTML += (drawCell("no_ship"))
 
+        // const sea = [
+        //     [".", "X", "~", ".", "#", "~", ".", "#", "~", "."],
+        //     [".", "#", "~", ".", "#", "~", "X", "#", "-", "."],
+        //     [".", "#", "~", ".", "#", "~", ".", "#", "~", "X"],
+        //     [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+        //     [".", "#", "~", "-", "X", "~", ".", "#", "~", "."],
+        //     [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
+        //     [".", "X", "~", ".", "#", "~", ".", "X", "~", "."],
+        //     [".", "#", "~", ".", "#", "X", ".", "#", "~", "."],
+        //     ["-", "#", "~", ".", "#", "~", ".", "#", "~", "."],
+        //     [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+        // ]
         const sea = [
-            [".", "X", "~", ".", "#", "~", ".", "#", "~", "."],
-            [".", "#", "~", ".", "#", "~", "X", "#", "-", "."],
-            [".", "#", "~", ".", "#", "~", ".", "#", "~", "X"],
-            [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
-            [".", "#", "~", "-", "X", "~", ".", "#", "~", "."],
-            [".", "#", "~", ".", "#", "~", ".", "#", "~", "."],
-            [".", "X", "~", ".", "#", "~", ".", "X", "~", "."],
-            [".", "#", "~", ".", "#", "X", ".", "#", "~", "."],
-            ["-", "#", "~", ".", "#", "~", ".", "#", "~", "."],
-            [".", "#", "X", ".", "#", "~", ".", "#", "~", "."],
+            [".", ".", "?", "?", "?", ".", ".", ".", ".", "."],
+            [".", ".", "?", "?", "?", ".", ".", "~", ".", "."],
+            [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+            [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+            [".", ".", ".", "#", "@", "#", ".", ".", ".", "."],
+            [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+            [".", ".", ".", ".", ".", ".", "-", "-", "-", "."],
+            [".", ".", ".", ".", ".", ".", "-", "X", "-", "."],
+            [".", ".", "~", ".", ".", ".", "-", "-", "-", "."],
+            [".", ".", ".", ".", ".", ".", ".", ".", ".", "."],
+
         ]
         // first our field's properties will be listed, and only after that what we know of the enemies
-        // . = spot of sea/spot of unknown nature
-        // # = unscathed ship/damaged ship, it also can be sunken on bot's field  that we see
-        // X = sunken ship/nonexistent
-        // ~ = nonexistent/misses
-        // - = where there cannot be a ship/where there cannot be a ship
+        // . = spot of sea 
+        // fix bot's spot of unknown nature
+        // # = unscathed ship 
+        // fix damaged ship, it also can be sunken on bot's field that we see
+        // X = sunken ship
+        // todo: add sunken ship decks to bot field
+        // ~ = misses (V)
+        // - = where there cannot be a ship/where there cannot be a ship (V)
+        // @ - damaged ship
+        // ? - spot of unknown nature
 
 
         document.getElementById("userSea").textContent = format(sea);
         const wrapperEl1 = document.querySelector("#board-1")
-        renderPrettySea(sea, wrapperEl1)
+        renderPrettySea(transformOppositeSea(sea), wrapperEl1)
         console.log(sea)
     </script>
 </body>

@@ -24,6 +24,7 @@
                 <div class="cell-wrapper">
 
                 </div>
+                <button id = "confetti-btn">Confetti Button</button>
             </section>
             <section>
                 <h2>Seas</h2>
@@ -39,157 +40,6 @@
     </div>
     <script>
 
-        const drawCell = (type, direction = "right") => {
-            let innerType = type
-            let condition = null
-            if (type === "damaged_ship") {
-                condition = "damaged"
-                innerType = "alive_ship"
-            } else if (type === "damaged_ship_nose") {
-                condition = "damaged"
-                innerType = "alive_ship_nose"
-            } else if (type === "sunken_ship") {
-                condition = "sunken"
-                innerType = "alive_ship"
-            } else if (type === "sunken_ship_nose") {
-                condition = "sunken"
-                innerType = "alive_ship_nose"
-            } 
-            let cell = '<div class="cell">'
-            // const cell = document.createElement("div")
-            // cell.classList.add("cell")
-            switch (innerType) {
-                case "empty_sea":
-                    cell += '<img src = "/pictures/cell/just_sea.png"/>'
-                    break
-                case "alive_ship":
-                    cell += '<img src = "/pictures/cell/just_sea.png"/>'
-                    cell += `<img src = "/pictures/cell/middle_deck.png" class = "direction-${direction}"/>`
-                    break
-                case "alive_ship_nose":
-                    cell += '<img src = "/pictures/cell/just_sea.png"/>'
-                    cell += `<img src = "/pictures/cell/end_deck.png" class = "direction-${direction}"/>`
-                    break
-                case "missed":
-                    cell += '<img src = "/pictures/cell/just_sea.png"/>'
-                    cell += `<img src = "/pictures/cell/mark_of_defeat.png"/>`//todo: better picture
-                    break
-                case "unknown":
-                    cell += '<img src = "/pictures/cell/unknown.png"/>'
-                    break
-                // case "damaged_ship":
-                //     cell = '<img src = "/pictures/cell/just_sea.png"/>'
-                //     cell += '<img src = "/pictures/cell/middle_deck.png"/>'
-                //     cell += '<img src = "/pictures/cell/mark_of_defeat.png"/>'
-                //     break
-                // case "sunken_ship":
-                //     cell = '<img src = "/pictures/cell/just_sea.png"/>'
-                //     cell += '<img src = "/pictures/cell/middle_deck.png"/>'
-                //     cell += '<img src = "/pictures/cell/explosion.png"/>'
-                //     break
-                case "no_ship": 
-                    cell += '<img src = "/pictures/cell/just_sea.png"/>'
-                    cell += '<img src = "/pictures/cell/waves.png"/>'  //todo: better picture
-                    break
-                default:
-                    cell += "default"
-            }
-            if (condition === "damaged") {
-                cell += '<img src = "/pictures/cell/explosion.png"/>'
-            } else if (condition === "sunken") {
-                cell += '<img src = "/pictures/cell/mark_of_defeat.png"/>'
-            }
-
-            cell += "</div>"
-            return cell
-        }
-
-        const transformVisibleSea = (sea) => {
-            const tSea = []
-            for (const row of sea) {
-                const tRow = []
-                for (const cell of row) {
-                    let tCell = cell
-                    if (cell === "#"){
-                        tCell = "@"
-                    }
-                    tRow.push(tCell)
-                }
-                tSea.push(tRow)
-            }
-            return tSea
-        }
-
-        const transformOppositeSea = (sea) => {
-            const tSea = []
-            for (const row of sea) {
-                const tRow = []
-                for (const cell of row) {
-                    let tCell = cell
-                    if (cell === "."){
-                        tCell = "?"
-                    }
-                    tRow.push(tCell)
-                }
-                tSea.push(tRow)
-            }
-            return tSea
-        }
-        
-        const renderPrettySea = (sea, wrapperEl) => {
-            const prevSea = wrapperEl.querySelector('.sea')
-            if (prevSea) {
-                prevSea.remove()
-            }
-            const seaEl = document.createElement("div")
-            seaEl.classList.add("sea")
-            let str = ""
-            let rowNumber = -1
-
-            for (let i = 0; i < 11; i++) {
-                alphabet = " abcdefghij"
-                str += `<div class="num_spot">${alphabet[i]}</div>`
-                seaEl.innerHTML = str
-                wrapperEl.append(seaEl)
-            }
-
-            for (const row of sea) {
-                rowNumber += 1
-                let colNumber = -1
-                str += `<div class="num_spot">${rowNumber + 1}</div>`
-
-                for (const cell of row) {
-                    colNumber += 1
-                    str += `<div class="spot" data-row="${rowNumber}" data-col="${colNumber}">`
-
-                    if (cell === ".") {
-                        str += drawCell("empty_sea")
-                    } else if (cell === "#") {
-                        str += drawCell("alive_ship")
-
-                    } else if (cell === "~") {
-                        str += drawCell("missed")
-
-                    } else if (cell === "X") {
-                        str += drawCell("sunken_ship")
-
-                    } else if (cell === "-") {
-                        str += drawCell("no_ship")
-
-                    } else if (cell === "@") {
-                        str += drawCell("damaged_ship")
-
-                    } else if (cell === "?") {
-                        str += drawCell("unknown")
-
-                    }
-
-                    str += "</div>"
-                }
-            }
-            seaEl.innerHTML = str
-            wrapperEl.append(seaEl)
-        }
 
         const cellWrapperEl = document.querySelector(".cell-wrapper")
         cellWrapperEl.innerHTML += (drawCell("empty_sea"))
@@ -205,6 +55,8 @@
         cellWrapperEl.innerHTML += (drawCell("sunken_ship"))
         cellWrapperEl.innerHTML += (drawCell("missed"))
         cellWrapperEl.innerHTML += (drawCell("no_ship"))
+
+
 
         // const sea = [
         //     [".", "X", "~", ".", "#", "~", ".", "#", "~", "."],
@@ -246,8 +98,25 @@
 
         document.getElementById("userSea").textContent = format(sea);
         const wrapperEl1 = document.querySelector("#board-1")
-        renderPrettySea(transformOppositeSea(sea), wrapperEl1)
+        // renderPrettySea(transformOppositeSea(sea), wrapperEl1)
+        renderPrettySea(transformVisibleSea(sea), wrapperEl1)
         console.log(sea)
+
+        const confettiBtn = document.querySelector("#confetti-btn")
+        confettiBtn.addEventListener("click", ()=>{
+            for(let i=0; i < 100; i++){
+                const div = document.createElement("div")
+                div.style.left = "20px"
+                div.style.top = "1000px"
+                div.classList.add("circle")
+                document.body.append(div)
+                setTimeout(()=>{
+                    div.style.top = 100 + Math.floor(Math.random()*400) + "px"
+                    div.style.left = 400 + Math.floor(Math.random()*400) + "px"
+
+                }, 50)
+            }
+        })
     </script>
 </body>
 

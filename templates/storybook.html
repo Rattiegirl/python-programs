@@ -27,6 +27,9 @@
                 <button id="confetti-btn">Confetti Button</button>
             </section>
             <section>
+                <button id="blryap-btn">Click for free blryap</button>
+            </section>
+            <section>
                 <h2>Seas</h2>
                 <div class="board" id="board-1">
                     <h2>Your sea</h2>
@@ -104,6 +107,13 @@
         const confettiBtn = document.querySelector("#confetti-btn")
         confettiBtn.addEventListener("click", () => {
             throwConfetti(250)
+        })
+
+        const blryapButton = document.getElementById("blryap-btn")
+        blryapButton.addEventListener("click", ()=>{
+            sounds.blryap.currentTime = 0
+            sounds.blryap.play()
+            throwConfetti()
         })
     </script>
 </body>

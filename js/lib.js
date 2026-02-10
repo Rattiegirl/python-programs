@@ -1,5 +1,9 @@
 const format = (sea) => sea.map(row => row.join(" ")).join("\n");
 
+const sounds = {
+    blryap: new Audio("/sounds/blryap.m4a")
+}
+
 async function fetchState() {
     const res = await fetch("/state");
     const data = await res.json();
@@ -24,6 +28,7 @@ async function fetchState() {
         status.textContent = "Game Over! Winner: " + data.winner.toUpperCase();
         if (data.winner === "user") {
             throwConfetti(250)
+            sounds.blryap.play()
         }
         document.getElementById("coord").disabled = true;
     } else if (data.is_user_turn) {

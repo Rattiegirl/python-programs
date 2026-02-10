@@ -14,6 +14,7 @@ app = FastAPI()
 app.mount("/pictures", StaticFiles(directory="pictures"), name="pictures")
 app.mount("/css", StaticFiles(directory="css"), name="css")
 app.mount("/js", StaticFiles(directory="js"), name="js")
+app.mount("/sounds", StaticFiles(directory="sounds"), name="sounds")
 
 class MoveRequest(BaseModel):
     coordinate: str

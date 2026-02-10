@@ -24,7 +24,7 @@
                 <div class="cell-wrapper">
 
                 </div>
-                <button id = "confetti-btn">Confetti Button</button>
+                <button id="confetti-btn">Confetti Button</button>
             </section>
             <section>
                 <h2>Seas</h2>
@@ -95,7 +95,6 @@
         // @ - damaged ship
         // ? - spot of unknown nature
 
-
         document.getElementById("userSea").textContent = format(sea);
         const wrapperEl1 = document.querySelector("#board-1")
         // renderPrettySea(transformOppositeSea(sea), wrapperEl1)
@@ -103,19 +102,8 @@
         console.log(sea)
 
         const confettiBtn = document.querySelector("#confetti-btn")
-        confettiBtn.addEventListener("click", ()=>{
-            for(let i=0; i < 100; i++){
-                const div = document.createElement("div")
-                div.style.left = "20px"
-                div.style.top = "1000px"
-                div.classList.add("circle")
-                document.body.append(div)
-                setTimeout(()=>{
-                    div.style.top = 100 + Math.floor(Math.random()*400) + "px"
-                    div.style.left = 400 + Math.floor(Math.random()*400) + "px"
-
-                }, 50)
-            }
+        confettiBtn.addEventListener("click", () => {
+            throwConfetti(250)
         })
     </script>
 </body>

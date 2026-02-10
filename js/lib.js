@@ -22,6 +22,9 @@ async function fetchState() {
     const status = document.getElementById("status");
     if (data.game_over) {
         status.textContent = "Game Over! Winner: " + data.winner.toUpperCase();
+        if (data.winner === "user") {
+            throwConfetti(250)
+        }
         document.getElementById("coord").disabled = true;
     } else if (data.is_user_turn) {
         status.textContent = "Your turn";
@@ -289,4 +292,41 @@ const renderPrettySea = (sea, wrapperEl) => {
     }
     seaEl.innerHTML = str
     wrapperEl.append(seaEl)
+}
+
+const getRandom = (range, start = 0, unit = "") => {
+    return start + Math.floor(Math.random() * range) + unit
+}
+
+const throwConfetti = (amount = 100) => {
+    for (let i = 0; i < amount; i++) {
+        const div = document.createElement("div")
+        div.style.left = "20px"
+        div.style.top = "1000px"
+        div.classList.add("circle")
+        div.style.backgroundColor = "rgb("
+            + getRandom(256) + ", "
+            + getRandom(256) + ", "
+            + getRandom(256) + ")"
+        const size = getRandom(30, 10)
+        const speed = size / 10
+        div.style.height = size + "px"
+        div.style.width = size + "px"
+        div.style.transition = speed + "s"
+        document.body.append(div)
+        setTimeout(() => {
+            div.style.top = getRandom(800, -100, "px")
+            div.style.left = getRandom(1100, 400, "px")
+
+        }, getRandom(1500, 50))
+
+        setTimeout(() => {
+            div.style.top = 1200 + "px"
+            div.style.opacity = 0
+        }, 3500)
+
+        setTimeout(() => {
+            document.body.removeChild(div)
+        }, 5500)
+    }
 }

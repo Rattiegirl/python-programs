@@ -52,11 +52,13 @@ def resetGame():
 
     game["user_sea"] = create_sea(ROWS, COLS)
     game["bot_sea"] = create_sea(ROWS, COLS)
-    game["user_visible_sea"] = create_sea(ROWS, COLS)
-    game["bot_visible_sea"] = create_sea(ROWS, COLS)
+    game["user_visible"] = create_sea(ROWS, COLS)
+    game["bot_visible"] = create_sea(ROWS, COLS)
 
     place_random_ships(game["user_sea"], SHIPS)
     place_random_ships(game["bot_sea"], SHIPS)
+
+    save_seas(game["user_sea"], game["bot_sea"], game["user_visible"], game["bot_visible"])
 
     game["is_user_turn"] = True
     game["finished"] = False

@@ -28,6 +28,8 @@
             </section>
             <section>
                 <button id="blryap-btn">Click for free blryap</button>
+                <button id="water-blorp-btn">Click for free water blorp</button>
+                <button id="cannon-fire-btn">Click for free cannon fire</button>
             </section>
             <section>
                 <h2>Seas</h2>
@@ -113,6 +115,20 @@
         blryapButton.addEventListener("click", ()=>{
             sounds.blryap.currentTime = 0
             sounds.blryap.play()
+            throwConfetti()
+        })
+
+        const waterBlorpButton = document.getElementById("water-blorp-btn")
+        waterBlorpButton.addEventListener("click", ()=>{
+            sounds.waterBlorp.currentTime = 0
+            sounds.waterBlorp.play()
+            throwConfetti()
+        })
+        
+        const cannonFireButton = document.getElementById("cannon-fire-btn")
+        cannonFireButton.addEventListener("click", ()=>{
+            sounds.cannonFire.currentTime = 0
+            sounds.cannonFire.play()
             throwConfetti()
         })
     </script>

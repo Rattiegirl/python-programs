@@ -1,8 +1,11 @@
 const format = (sea) => sea.map(row => row.join(" ")).join("\n");
 
 const sounds = {
-    blryap: new Audio("/sounds/blryap.m4a")
+    blryap: new Audio("/sounds/blryap.m4a"),
+    waterBlorp: new Audio("/sounds/water_blorp.mp3"),
+    cannonFire: new Audio("/sounds/cannon_fire.mp3"),
 }
+
 
 async function fetchState() {
     const res = await fetch("/state");
@@ -25,7 +28,7 @@ async function fetchState() {
 
     const status = document.getElementById("status");
     if (data.game_over) {
-        status.textContent = "Game Over! Winner: " + data.winner.toUpperCase();
+        status.textContent = "Game Over! Winner: "  + data.winner.toUpperCase();
         if (data.winner === "user") {
             throwConfetti(250)
             sounds.blryap.play()
